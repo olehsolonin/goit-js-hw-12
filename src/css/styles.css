@@ -35,6 +35,10 @@ padding: 36px 156px;
 	width: 1128px;
 }
 
+.container {
+	padding-bottom: 16px;
+}
+
 .search-form {
 	margin-bottom: 32px;
 	display: flex;
@@ -113,6 +117,7 @@ border-color: transparent;
 		display: flex;
 		flex-wrap: wrap;
 		gap: 24px;
+		margin-bottom: 32px;
 	}
 
 	.box-item {
@@ -132,4 +137,32 @@ border-color: transparent;
 		display: flex;
 		flex-direction: row;
 		justify-content: space-around;
+	}
+
+	.load-more {
+		border-radius: 8px;
+padding: 8px 16px;
+width: 125px;
+height: 40px;
+background: #4e75ff;
+display: flex;
+align-items: center;
+justify-content: center;
+flex-direction: row;
+gap: 10px;
+font-family: "Montserrat", sans-serif;
+font-weight: 500;
+font-size: 16px;
+line-height: 1.5;
+letter-spacing: 0.04em;
+color: #fff;
+border-color: transparent;
+margin: 0 auto;
+
+&.is-hidden {
+	opacity: 0;
+	visibility: hidden;
+	pointer-events: 0;
+ }
+
 	}
