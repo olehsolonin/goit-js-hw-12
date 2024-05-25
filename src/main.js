@@ -16,6 +16,7 @@ let searchQuery = '';
 let page = 1;
 let lightbox;
 let totalHits = 0;
+let loadedHits = 0;
 
 const initializeOrUpdateLightbox = () => {
 	if (lightbox) {
@@ -33,6 +34,7 @@ const onSearchFormSubmit = async (event) => {
 	event.preventDefault();
 	searchQuery = event.target.elements.search.value.trim();
 	page = 1;
+	loadedHits = 0;
 
 	if (searchQuery === '') {
 		galleryEl.innerHTML = '';
@@ -47,12 +49,13 @@ const onSearchFormSubmit = async (event) => {
 	}
 
 	galleryEl.innerHTML = '';
-	loaderEl.classList.add("is-hidden");
+	loaderEl.classList.remove("is-hidden");
 	loadMoreBtnEl.classList.add("is-hidden");
 
 	try {
 		const imagesData = await fetchPhotosByQuery(searchQuery, page);
 		totalHits = imagesData.totalHits;
+		loadedHits += imagesData.hits.length;
 
 		if (totalHits === 0) {
 			iziToast.show({
@@ -68,8 +71,16 @@ const onSearchFormSubmit = async (event) => {
 		galleryEl.insertAdjacentHTML("afterbegin", markup);
 		initializeOrUpdateLightbox();
 
-		if (totalHits > 15) {
+		if (loadedHits < totalHits) {
 			loadMoreBtnEl.classList.remove("is-hidden");
+		}
+		else {
+			iziToast.show({
+				message: "We're sorry, but you've reached the end of search results.",
+				position: 'topRight',
+				timeout: 2000,
+				color: 'red',
+			});
 		}
 
 	} catch (error) {
@@ -86,6 +97,7 @@ const onLoadMore = async () => {
 
 	try {
 		const imagesData = await fetchPhotosByQuery(searchQuery, page);
+		loadedHits += imagesData.hits.length;
 
 		const markup = createGalleryItemMarkup(imagesData.hits);
 		galleryEl.insertAdjacentHTML("beforeend", markup);
@@ -97,7 +109,7 @@ const onLoadMore = async () => {
 			behavior: 'smooth',
 		});
 
-		if (page * 15 >= totalHits) {
+		if (loadedHits >= totalHits) {
 			loadMoreBtnEl.classList.add("is-hidden");
 			iziToast.show({
 				message: "We're sorry, but you've reached the end of search results.",
