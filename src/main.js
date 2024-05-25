@@ -42,6 +42,7 @@ const onSearchFormSubmit = async (event) => {
 	if (searchQuery === '') {
 		galleryEl.innerHTML = '';
 		event.target.reset();
+		loaderEl.classList.add("is-hidden");
 		iziToast.show({
 			message: 'Input field can not be empty',
 			position: 'topRight',
