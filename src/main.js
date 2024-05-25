@@ -9,7 +9,7 @@ import { createGalleryItemMarkup } from "./js/render-functions.js";
 
 const galleryEl = document.querySelector(".gallery-box-js");
 const searchFormEl = document.querySelector(".search-form-js");
-const loaderEl = document.querySelector(".loader-js");
+const loaderEl = document.querySelector(".loader");
 const loadMoreBtnEl = document.querySelector('.load-more');
 
 let searchQuery = '';
@@ -36,6 +36,9 @@ const onSearchFormSubmit = async (event) => {
 	page = 1;
 	loadedHits = 0;
 
+	galleryEl.innerHTML = '';
+	loaderEl.classList.remove("is-hidden");
+
 	if (searchQuery === '') {
 		galleryEl.innerHTML = '';
 		event.target.reset();
@@ -48,12 +51,13 @@ const onSearchFormSubmit = async (event) => {
 		return;
 	}
 
-	galleryEl.innerHTML = '';
-	loaderEl.classList.remove("is-hidden");
+	// galleryEl.innerHTML = '';
 	loadMoreBtnEl.classList.add("is-hidden");
+	// loaderEl.classList.remove("is-hidden");
 
 	try {
 		const imagesData = await fetchPhotosByQuery(searchQuery, page);
+		loaderEl.classList.add("is-hidden");
 		totalHits = imagesData.totalHits;
 		loadedHits += imagesData.hits.length;
 
@@ -86,8 +90,8 @@ const onSearchFormSubmit = async (event) => {
 	} catch (error) {
 		console.log(error);
 	} finally {
-		event.target.reset();
 		loaderEl.classList.add("is-hidden");
+		event.target.reset();
 	}
 };
 
@@ -97,6 +101,7 @@ const onLoadMore = async () => {
 
 	try {
 		const imagesData = await fetchPhotosByQuery(searchQuery, page);
+		loaderEl.classList.add("is-hidden");
 		loadedHits += imagesData.hits.length;
 
 		const markup = createGalleryItemMarkup(imagesData.hits);
@@ -121,6 +126,7 @@ const onLoadMore = async () => {
 
 	} catch (error) {
 		console.log(error);
+		// loaderEl.classList.add("is-hidden");
 	} finally {
 		loaderEl.classList.add("is-hidden");
 	}
